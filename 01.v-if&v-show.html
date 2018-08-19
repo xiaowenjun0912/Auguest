@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <p>{{age}}岁了</p>
+        <input type="range" v-model="age">
+        <ul>
+            <li v-if="age>3">三岁以下好玩泥巴</li>
+            <li v-if="age>4&&age<10">好好学习天天向上</li>
+        </ul>
+    </div>
+</body>
+</html>
+<script src="./lib/vue.js"></script>
+<script>
+
+    /*
+    1. v-if 动态的创建 删除 如果dom元素需要频繁的显示隐藏从使用v-if时性能的消耗比较大,不值得
+    2. v-show 操纵dom元素的显示和隐藏 第一次加载时候消耗的性能比较大,频繁的切换的情况使用v-show  
+    3. 注释记得写序号
+    */
+    let app = new Vue({
+        el:'#app',
+        data:{
+           age:0 
+        }
+    })
+</script>

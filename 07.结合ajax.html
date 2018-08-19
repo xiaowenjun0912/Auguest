@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <h2>天气预报</h2>
+        <input type="text" v-model="city" placeholder="请输入查询的城市" @keyup.enter="search">
+        <ul>
+            <li v-for="(item, index) in forecast">
+                {{item.date}}---{{item.high}}---{{item.fengli}}---{{item.low}}--{{item.fengxiang}}
+            </li>
+            <!-- <li v-for="(item, index) in forecast"></li> -->
+        </ul>
+    </div>
+</body>
+</html>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="./lib/jquery-1.12.4.min.js"></script>
+<script>
+    let app = new Vue({
+        el: "#app",
+        data: {
+            city: "",
+            //记住数据这里要加一个forcast
+            forecast:[]
+        },
+        methods: {
+            search(){
+                $.ajax({
+                    url: "http://wthrcdn.etouch.cn/weather_mini",
+                    data:{
+                        city:this.city
+                    },
+                    dataType:"json",
+                    success:(backData)=>{
+                        console.log(backData);
+                        this.forecast = backData.data.forecast;
+                    }
+
+                })
+            }
+           
+                  
+            
+        }
+    })
+</script>

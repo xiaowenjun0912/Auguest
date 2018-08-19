@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<style>
+    ul {
+        list-style: none;
+        width: 500px;
+        margin: 0 auto;
+    }
+
+    li {
+        font-size: 22px;
+        font-weight: 700;
+        color: hotpink;
+    }
+
+    h2 {
+        text-align: center;
+    }
+
+    #app {
+        text-align: center;
+    }
+
+    ul>li {
+        text-align: left;
+    }
+
+    li.done span {
+        text-decoration: line-through;
+        color: gray;
+    }
+
+    li a {
+        text-decoration: none;
+        color: white;
+        border: 1px solid #000;
+        border-radius: 50%;
+        background-color: black;
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        text-align: center;
+        line-height: 20px;
+        float: right;
+    }
+
+    [v-cloak] {
+        display: none;
+    }
+</style>
+
+<body>
+    <div id="app" v-cloak>
+        <h1>任务列表</h1>
+        <input type="text" v-model.trim="someThing" placeholder="请添加待办事项" @keyup.enter="addToDo">
+        <br>
+        <h3>何优秀的任务总数:{{item.length}}个;-----已经完成:{{doneNum}}个</h3>
+        <ul>
+            <!-- finish(index)传入参数index -->
+            <li :class="{done:item.isDone}" v-for="(item, index) in item" @click="finish(index)">
+                <span>{{index+1}}.{{item.content}}</span>
+                <a href="#" @click.stop="deleteOne(index)">X</a>
+            </li>
+        </ul>
+
+    </div>
+</body>
+
+</html>
+<!-- <script src="./lib/vue.js"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script>
+    let item = [];
+    if(!window.localStorage.getItem('toDoData')){
+
+    }else{
+        item = JSON.parse(window.localStorage.getItem('toDoData'));
+    }
+         //重载数据 或者关闭浏览器时触发
+        window.onbeforeunload = function () {
+            window.localStorage.setItem('toDoData', JSON.stringify(item));
+        }
+   
+
+    let app = new Vue({
+        el: '#app',
+        data: {
+            someThing: "",
+            item
+        },
+        methods: {
+            // 新增一个事项
+            addToDo() {
+                this.item.push({
+                    content: this.someThing,
+                    isDone: false
+                })
+                this.someThing = '';
+            },
+            //修改一个事项
+            finish(index) {
+                // console.log(1);
+                this.item[index].isDone = !this.item[index].isDone;
+            },
+            // 删除一个事项 这里不能使用delete会用报错有冲突
+            deleteOne(index) {
+                // console.log(index);
+                if (confirm('是否要删除?')) {
+                    this.item.splice(index, 1)
+                }
+            }
+        },
+        computed: {
+            doneNum() {
+                let num = 0;
+                for (let i = 0; i < this.item.length; i++) {
+                    if (this.item[i].isDone) {
+                        num++;
+                    }
+                }
+                return num;
+            }
+        }
+    })
+</script>

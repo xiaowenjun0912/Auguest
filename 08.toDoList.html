@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        ul {
+            list-style: none;
+            width: 500px;
+            margin: 0 auto;
+        }
+
+        li {
+            font-size: 22px;
+            font-weight: 700;
+            color: hotpink;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        #app {
+            text-align: center;
+        }
+
+        ul>li {
+            text-align: left;
+        }
+
+        li.done span {
+            text-decoration: line-through;
+            color: gray;
+        }
+
+        li a {
+            text-decoration: none;
+            color: white;
+            border: 1px solid #000;
+            border-radius: 50%;
+            background-color: black;
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 20px;
+            float: right;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- v-colak 显示元素 -->
+    <div id="app" v-cloak>
+        <h2>重大待办事项</h2>
+        <input type="text" @keyup.enter="addToDo" v-model="someThing" placeholder="请添加代办事项">
+        <br>
+        <h2>总数{{items.length}}: 已经完成:{{doneNum}} </h2>
+        <ul>
+            <li v-for="(item, index) in items" :class="{done:item.isDone}" @click="finish(index)">
+                <span>{{index+1}}.{{item.content}}</span>
+                <a href="#" @click.stop="deleteOne(index)">X</a>
+            </li>
+        </ul>
+    </div>
+</body>
+
+</html>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script>
+
+let items = [];
+if(!window.localStorage.getItem('toDoData')){
+
+}else{
+    items = JSON.parse(window.localStorage.getItem('toDoData'));
+}
+            
+window.onbeforeunload=function(){
+    window.localStorage.setItem('toDoData',JSON.stringify(items));
+}
+
+    let app = new Vue({
+        el:'#app',
+        data:{
+            someThing:'',
+            items
+        },
+        methods:{
+            addToDo(){
+                this.items.push({
+                    content:this.someThing,
+                    isDone:false
+                })
+                this.someThing = '';
+            },
+            finish(index){
+                // console.log(index);
+                this.items[index].isDone = !this.items[index].isDone;
+            },
+            deleteOne(index){
+                // console.log(index);
+                this.items.splice(index,1);
+            }
+        },
+        computed:{
+            doneNum(){
+                let num = 0;
+                for(let i = 0;i<this.items.length;i++){
+                    if(this.items[i].isDone){
+                        num++;
+                    }
+                }
+                return num;
+            }
+        }
+    })
+</script>
